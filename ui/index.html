@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>HR Sales Interaction Dashboard</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+    <h1>HR Sales Interaction Dashboard</h1>
+
+    <!-- CLIENTS -->
+    <section>
+        <h2>Clients</h2>
+
+        <h3>Add Client</h3>
+        <input id="clientName" placeholder="Client Name" />
+        <input id="clientAddress" placeholder="Client Address" />
+        <button onclick="createClient()">Create Client</button>
+
+        <h3>Existing Clients</h3>
+        <ul id="clientsList"></ul>
+    </section>
+
+    <!-- INTERACTIONS -->
+    <section>
+        <h2>Interactions</h2>
+
+        <h3>Add Interaction</h3>
+        <input id="interactionDate" type="date" />
+        <input id="interactionTime" type="time" />
+        <select id="interactionClient"></select>
+        <textarea id="interactionSummary" placeholder="Interaction summary"></textarea>
+        <button onclick="createInteraction()">Create Interaction</button>
+
+        <h3>Existing Interactions</h3>
+        <ul id="interactionsList"></ul>
+    </section>
+
+    <script src="client-behavior.js"></script>
+    <script src="interaction-behavior.js"></script>
+</body>
+</html>
