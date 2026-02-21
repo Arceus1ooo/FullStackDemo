@@ -18,7 +18,14 @@ async function loadClients() {
             // List rendering
             const li = document.createElement("li");
             li.className = "card";
-            li.textContent = `${client.name} — ${client.address}`;
+            li.innerHTML = `<div style='display:flex;align-items:center;justify-content:space-between;'><span>${client.name} — ${client.address}</span><button class='delete-btn' onclick='deleteClient(\"${client.name}\")'>Delete</button></div>`;
+            li.innerHTML = `<div style='display:flex;align-items:center;justify-content:space-between;'>
+                <span>${client.name} — ${client.address}</span>
+                <div>
+                    <button class='edit-btn' onclick='openClientModal("${client.name}", "${client.address}")'>Edit</button>
+                    <button class='delete-btn' onclick='deleteClient("${client.name}")'>Delete</button>
+                </div>
+            </div>`;
             list.appendChild(li);
 
             // Dropdown population
@@ -61,3 +68,55 @@ async function createClient() {
 }
 
 loadClients();
+// Edit client modal logic
+function openClientModal(name, address) {
+    document.getElementById('editClientName').value = name;
+    document.getElementById('editClientAddress').value = address;
+    document.getElementById('editClientModal').style.display = 'block';
+}
+function closeClientModal() {
+    document.getElementById('editClientModal').style.display = 'none';
+}
+async function submitClientEdit(event) {
+    event.preventDefault();
+    const name = document.getElementById('editClientName').value;
+    const address = document.getElementById('editClientAddress').value;
+    const res = await fetch(`/api/clients/${encodeURIComponent(name)}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ address })
+    });
+    if (!res.ok) {
+        const err = await res.json();
+        alert(err.message);
+        return;
+    }
+    closeClientModal();
+    await loadClients();
+}
+// Delete client handler
+async function deleteClient(name) {
+    // Show custom modal
+    showDeleteClientModal(name);
+}
+
+function showDeleteClientModal(name) {
+    document.getElementById('deleteClientText').textContent = `Delete client '${name}' and all its interactions?`;
+    document.getElementById('deleteClientModal').style.display = 'block';
+    document.getElementById('confirmDeleteClientBtn').onclick = async function () {
+        const res = await fetch(`/api/clients/${encodeURIComponent(name)}`, { method: "DELETE" });
+        if (!res.ok) {
+            const err = await res.json();
+            alert(err.message);
+            return;
+        }
+        closeDeleteClientModal();
+        await loadClients();
+        if (typeof loadInteractions === 'function') loadInteractions();
+    };
+}
+
+function closeDeleteClientModal() {
+    document.getElementById('deleteClientModal').style.display = 'none';
+    document.getElementById('confirmDeleteClientBtn').onclick = null;
+}

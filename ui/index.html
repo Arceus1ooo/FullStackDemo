@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="UTF-8" />
     <title>HR Sales Interaction Dashboard</title>
     <link rel="stylesheet" href="styles.css" />
 </head>
+
 <body>
 
     <h1>HR Sales Interaction Dashboard</h1>
@@ -20,6 +22,30 @@
 
         <h3>Existing Clients</h3>
         <ul id="clientsList"></ul>
+        <!-- Delete Client Modal -->
+        <div id="deleteClientModal" class="modal" style="display:none;">
+            <div class="modal-content">
+                <span class="close" onclick="closeDeleteClientModal()">&times;</span>
+                <h3>Delete Client</h3>
+                <p id="deleteClientText"></p>
+                <button id="confirmDeleteClientBtn">Delete</button>
+                <button onclick="closeDeleteClientModal()">Cancel</button>
+            </div>
+        </div>
+        <!-- Edit Client Modal -->
+        <div id="editClientModal" class="modal" style="display:none;">
+            <div class="modal-content">
+                <span class="close" onclick="closeClientModal()">&times;</span>
+                <h3>Edit Client Address</h3>
+                <form id="editClientForm" onsubmit="submitClientEdit(event)">
+                    <label>Client Name:</label>
+                    <input id="editClientName" disabled />
+                    <label>Address:</label>
+                    <input id="editClientAddress" required />
+                    <button type="submit">Save</button>
+                </form>
+            </div>
+        </div>
     </section>
 
     <!-- INTERACTIONS -->
@@ -35,9 +61,33 @@
 
         <h3>Existing Interactions</h3>
         <ul id="interactionsList"></ul>
+        <!-- Delete Interaction Modal -->
+        <div id="deleteInteractionModal" class="modal" style="display:none;">
+            <div class="modal-content">
+                <span class="close" onclick="closeDeleteInteractionModal()">&times;</span>
+                <h3>Delete Interaction</h3>
+                <p id="deleteInteractionText"></p>
+                <button id="confirmDeleteInteractionBtn">Delete</button>
+                <button onclick="closeDeleteInteractionModal()">Cancel</button>
+            </div>
+        </div>
+        <!-- Edit Interaction Modal -->
+        <div id="editInteractionModal" class="modal" style="display:none;">
+            <div class="modal-content">
+                <span class="close" onclick="closeInteractionModal()">&times;</span>
+                <h3>Edit Interaction Summary</h3>
+                <form id="editInteractionForm" onsubmit="submitInteractionEdit(event)">
+                    <label>Summary:</label>
+                    <textarea id="editInteractionSummary" required></textarea>
+                    <input type="hidden" id="editInteractionIndex" />
+                    <button type="submit">Save</button>
+                </form>
+            </div>
+        </div>
     </section>
 
     <script src="client-behavior.js"></script>
     <script src="interaction-behavior.js"></script>
 </body>
+
 </html>

@@ -16,7 +16,34 @@ function createInteraction(data) {
     fs.writeFileSync(interactionsPath, JSON.stringify(interactions, null, 2));
 }
 
+// Delete interaction by index
+function deleteInteractionByIndex(index) {
+    const interactions = getInteractions();
+    if (index < 0 || index >= interactions.length) return false;
+    interactions.splice(index, 1);
+    fs.writeFileSync(interactionsPath, JSON.stringify(interactions, null, 2));
+    return true;
+}
+// Delete interactions by client name
+function deleteInteractionsByClient(clientName) {
+    let interactions = getInteractions();
+    interactions = interactions.filter(i => i.client !== clientName);
+    fs.writeFileSync(interactionsPath, JSON.stringify(interactions, null, 2));
+}
+
+// Update interaction summary by index
+function updateInteractionSummary(index, newSummary) {
+    const interactions = getInteractions();
+    if (index < 0 || index >= interactions.length) return false;
+    interactions[index].summary = newSummary;
+    fs.writeFileSync(interactionsPath, JSON.stringify(interactions, null, 2));
+    return true;
+}
+
 module.exports = {
     getInteractions,
-    createInteraction
+    createInteraction,
+    deleteInteractionByIndex,
+    deleteInteractionsByClient,
+    updateInteractionSummary
 };
