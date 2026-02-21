@@ -40,4 +40,34 @@ router.post("/", (req, res) => {
     res.status(201).json(newInteraction);
 });
 
+// PUT interaction summary by index
+router.put('/:index', (req, res) => {
+    const index = parseInt(req.params.index);
+    const { summary } = req.body;
+    if (isNaN(index)) {
+        return res.status(400).json({ message: 'Invalid interaction index' });
+    }
+    if (!summary) {
+        return res.status(400).json({ message: 'summary is required' });
+    }
+    const updated = interactionServices.updateInteractionSummary(index, summary);
+    if (!updated) {
+        return res.status(404).json({ message: 'Interaction not found' });
+    }
+    res.json({ message: 'Interaction summary updated' });
+});
+// DELETE interaction by index
+router.delete('/:index', (req, res) => {
+    const index = parseInt(req.params.index);
+    if (isNaN(index)) {
+        return res.status(400).json({ message: 'Invalid interaction index' });
+    }
+    const success = interactionServices.deleteInteractionByIndex(index);
+    if (success) {
+        res.json({ message: 'Interaction deleted' });
+    } else {
+        res.status(404).json({ message: 'Interaction not found' });
+    }
+});
+
 module.exports = router;

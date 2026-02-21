@@ -15,10 +15,13 @@ async function loadInteractions() {
             const li = document.createElement("li");
             li.className = "card";
             li.innerHTML = `
-                <strong>${interaction.client}</strong> —
-                ${interaction.date} ${interaction.time}
-                <br/>
-                ${interaction.summary}
+                <div style='display:flex;align-items:center;justify-content:space-between;'>
+                    <span><strong>${interaction.client}</strong> — ${interaction.date} ${interaction.time}<br/>${interaction.summary}</span>
+                    <div>
+                        <button class='edit-btn' onclick='openInteractionModal(${interactions.indexOf(interaction)}, \"${interaction.summary.replace(/"/g, '&quot;')}\")'>Edit</button>
+                        <button class='delete-btn' onclick='deleteInteraction(${interactions.indexOf(interaction)})'>Delete</button>
+                    </div>
+                </div>
             `;
             list.appendChild(li);
         });
@@ -57,3 +60,54 @@ async function createInteraction() {
 }
 
 loadInteractions();
+// Edit interaction modal logic
+function openInteractionModal(index, summary) {
+    document.getElementById('editInteractionIndex').value = index;
+    document.getElementById('editInteractionSummary').value = summary;
+    document.getElementById('editInteractionModal').style.display = 'block';
+}
+function closeInteractionModal() {
+    document.getElementById('editInteractionModal').style.display = 'none';
+}
+async function submitInteractionEdit(event) {
+    event.preventDefault();
+    const index = document.getElementById('editInteractionIndex').value;
+    const summary = document.getElementById('editInteractionSummary').value;
+    const res = await fetch(`/api/interactions/${index}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ summary })
+    });
+    if (!res.ok) {
+        const err = await res.json();
+        alert(err.message);
+        return;
+    }
+    closeInteractionModal();
+    await loadInteractions();
+}
+// Delete interaction handler
+async function deleteInteraction(index) {
+    // Show custom modal
+    showDeleteInteractionModal(index);
+}
+
+function showDeleteInteractionModal(index) {
+    document.getElementById('deleteInteractionText').textContent = 'Delete this interaction?';
+    document.getElementById('deleteInteractionModal').style.display = 'block';
+    document.getElementById('confirmDeleteInteractionBtn').onclick = async function () {
+        const res = await fetch(`/api/interactions/${index}`, { method: "DELETE" });
+        if (!res.ok) {
+            const err = await res.json();
+            alert(err.message);
+            return;
+        }
+        closeDeleteInteractionModal();
+        await loadInteractions();
+    };
+}
+
+function closeDeleteInteractionModal() {
+    document.getElementById('deleteInteractionModal').style.display = 'none';
+    document.getElementById('confirmDeleteInteractionBtn').onclick = null;
+}
